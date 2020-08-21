@@ -1,82 +1,118 @@
 const debug = require('debug')('MarsRover:main.app');
-
-let grid;
-let rovers;
+const readline = require('readline');
 
 /**
- * BEGIN User input
+ * BEGIN Application
  */
-try {
-    // TODO get max height and with of terminal
-} catch (e) {
-    console.log('\nFailed to retrieve grid display size');
-    process.exit();
-}
+(async () => {
+    let grid;
+    let rovers = [];
 
+    try {
+        /**
+         * BEGIN Gid input
+         */
+        try {
+            let mWidth;
+            let mHeight;
 
-try {
-    // TODO ask user input for grid size
-    const GridModel = require('./app/grid.model');
-    // FIXME remove test data
-    grid = new GridModel('5 5', { X: 20, Y: 20 });
+            try {
+                mWidth = process.stdout.columns / 5;
+                mHeight = process.stdout.rows;
+            } catch (e) {
+                console.log('\nFailed to retrieve grid display size');
+                process.exit();
+            }
 
-    // TODO check if grid size within terminal row & col
-} catch (e) {
-    if (typeof e == 'string') {
+            let gridInput = await getUserInput('Enter the width and height of grid (ie. max: ' + mWidth + ' ' + mHeight + '): ')
+
+            const GridModel = require('./app/grid.model');
+
+            grid = new GridModel(gridInput, { X: mWidth, Y: mHeight });
+        } catch (e) {
+            if (typeof e == 'string') {
+                debug(e);
+                process.exit();
+            }
+            debug('\nInvalid Grid size');
+            process.exit();
+        }
+
+        /**
+         * BEGIN Rover input
+         */
+        try {
+            let roverCount = parseInt(await getUserInput('How many rover do you want: '));
+
+            if (roverCount > grid.X * grid.Y) {
+                throw 'Grid can support that many rovers';
+            }
+
+            const RoverModel = require('./app/rover.model');
+
+            let r, roverInit, roverMoves;
+            for (let i = 0; i < roverCount; i++) {
+                roverInit = await getUserInput('Enter rover initial position: ');
+                roverMoves = await getUserInput('Enter rover moves: ');
+
+                r = new RoverModel(roverInit, roverMoves, grid);
+
+                rovers.push(r);
+            }
+        } catch (e) {
+            debug(e)
+            if (typeof e == 'string') {
+                debug(e);
+                process.exit();
+            }
+            debug('\nFailed to create rovers');
+            process.exit();
+        }
+
+        /**
+         * BEGIN Start of game
+         */
+        try {
+            const GameHandler = require('./app/grid.handler');
+
+            let game = new GameHandler(grid, rovers);
+
+            console.log('----START GRID----')
+            game.printGrid();
+
+            game.startGame();
+
+            console.log('----END GRID----')
+            game.printGrid();
+
+            console.log('----ROVERS----')
+            game.printRovers();
+        } catch (e) {
+            if (typeof e == 'string') {
+                console.log(e);
+                process.exit();
+            }
+            debug('\nFailed to execute game');
+            process.exit();
+        }
+    } catch (e) {
+        // Deal with the fact the chain failed
         debug(e);
-        process.exit();
     }
-    debug('\nInvalid Grid size');
-    process.exit();
-}
-
-try {
-    // TODO ask rover count
-    // FIXME remove test data
-    let roverCount = 2;
-
-    // TODO check if rover count is less then grid slots
-
-    const RoverModel = require('./app/rover.model');
-    // FIXME remove test data
-    rovers = [new RoverModel('1 2 N', 'LMLMLMLMM', grid), new RoverModel('3 3 E', 'MMRMMRMRRM', grid)];
-
-    for (let i = 0; i < roverCount; i++) {
-        // TODO ask rover input & validated
-    }
-} catch (e) {
-    debug(e)
-    if (typeof e == 'string') {
-        debug(e);
-        process.exit();
-    }
-    debug('\nFailed to create rovers');
-    process.exit();
-}
+})();
 
 /**
- * BEGIN Start of game
+ * Handle request user input
+ * @param {string} query - question to user
  */
-try {
-    const GameHandler = require('./app/grid.handler');
+async function getUserInput(query) {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+    });
 
-    let game = new GameHandler(grid, rovers);
-
-    console.log('----START GRID----')
-    game.printGrid();
-
-    game.startGame();
-
-    console.log('----END GRID----')
-    game.printGrid();
-
-    console.log('----ROVERS----')
-    game.printRovers();
-} catch (e) {
-    if (typeof e == 'string') {
-        console.log(e);
-        process.exit();
-    }
-    debug('\nFailed to execute game');
-    process.exit();
+    return new Promise(resolve => rl.question(query, ans => {
+        rl.close();
+        resolve(ans);
+    }))
 }
