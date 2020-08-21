@@ -14,15 +14,15 @@ class GameHandler {
     constructor(g, r) {
         rovers = r;
 
-        grid = initGrid(g);
+        this.initGrid(g);
 
-        placeRovers();
+        this.placeRovers();
     }
 
     // init grid to given size & fill with blank spots
     initGrid(g) {
         // store a reference to grid height
-        gridHeight = g.Y;
+        gridHeight = g.Y - 1;
 
         grid = new Array(g.X);
 
@@ -38,7 +38,7 @@ class GameHandler {
     // place rovers on grid at their initial locations
     placeRovers() {
         for (const rover of rovers) {
-            grid[rover.X][gridHeight - rover.Y] = rover.D;
+            grid[rover.X][rover.Y] = rover.D;
         }
     }
 
@@ -47,7 +47,7 @@ class GameHandler {
         for (let r = 0; r < rovers.length; r++) {
             let rover = rovers.shift();
 
-            processRover(rover);
+            this.processRover(rover);
 
             rovers.push(rover);
         }
@@ -72,6 +72,14 @@ class GameHandler {
     // loop array and print each index
     printGrid() {
         // TODO loop array and print each index
+        for (let y = gridHeight; y >= 0; y--) {
+            let line = '';
+            for (let x = 0; x < grid.length; x++) {
+                line += grid[x][y] + '\t';
+            }
+            console.log(line);
+        }
+        console.log('');
     }
 }
 

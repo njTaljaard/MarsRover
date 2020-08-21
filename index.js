@@ -62,10 +62,12 @@ try {
 
     let game = new GameHandler(grid, rovers);
 
+    console.log('----START GRID----')
     game.printGrid();
 
     game.startGame();
 
+    console.log('----END GRID----')
     game.printGrid();
 } catch (e) {
     if (typeof e == 'string') {
