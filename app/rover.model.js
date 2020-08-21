@@ -23,7 +23,6 @@ class RoverModel {
         let [errorStatus, errorDetail] = this.validate();
 
         if (errorStatus) {
-            console.log(errorDetail)
             throw 'Not a valid rover'
         }
     }

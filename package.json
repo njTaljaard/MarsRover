@@ -10,9 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chai": "^4.2.0",
     "debug": "^4.1.1",
-    "mocha": "^8.1.1",
     "podeng": "^1.5.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "nyc": "^15.1.0",
+    "mocha": "^8.1.1"
   }
 }

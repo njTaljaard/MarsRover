@@ -18,7 +18,6 @@ class GridModel {
         let [errorStatus, errorDetail] = this.validate();
 
         if (errorStatus) {
-            console.log(errorDetail)
             throw 'Not a valid grid'
         }
     }
@@ -34,10 +33,9 @@ class GridModel {
         this.X = parseInt(split[0]);
         this.Y = parseInt(split[1]);
 
-        if (this.X < outputSpace.X && this.Y < outputSpace.Y) {
-            return;
+        if (this.X >= outputSpace.X && this.Y >= outputSpace.Y) {
+            throw 'Grid is to large to output';
         }
-        throw 'Grid is to large to output';
     }
 
     validate() {
