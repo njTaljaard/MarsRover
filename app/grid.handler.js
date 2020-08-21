@@ -1,3 +1,5 @@
+const debug = require('debug')('MarsRover:grid.handler');
+
 let grid;
 let gridHeight;
 let rovers;
@@ -58,7 +60,13 @@ class GameHandler {
 
     // check if rover's new location is available
     verifyLocation(location) {
+        // TODO check if location with grid bounds
+        // TODO check if location is unoccupied
+    }
 
+    // get a copy of current rover locations
+    getRover() {
+        return rovers;
     }
 
     // loop array and print each index

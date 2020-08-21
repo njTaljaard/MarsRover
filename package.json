@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node —-use_strict .",
+    "start": "DEBUG='MarsRover:*' node .",
     "test": "nyc --reporter=html --reporter=text mocha --exit"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "chai": "^4.2.0",
+    "debug": "^4.1.1",
     "mocha": "^8.1.1",
     "podeng": "^1.5.4"
   }

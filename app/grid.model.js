@@ -8,27 +8,36 @@ const GridItem = blueprint.object({
     frozen: true
 });
 
-const GridValidator = validator(RoverItem);
+const GridValidator = validator(GridItem);
 
 class GridModel {
 
-    constructor(input, grid) {
-        this.assign(input, grid);
+    constructor(input, outputSpace) {
+        this.assign(input, outputSpace);
 
         let [errorStatus, errorDetail] = this.validate();
 
         if (errorStatus) {
             console.log(errorDetail)
-            throw 'Not a valid rover'
+            throw 'Not a valid grid'
         }
     }
 
     /**
      * Parse user string and validate input
      * @param {string} input - is the user string from terminal
+     * @param {string} outputSpace - grid bounds to validate rover starts on grid
      */
-    assign(input) {
-        //
+    assign(input, outputSpace) {
+        let split = input.split(' ');
+
+        this.X = split[0];
+        this.Y = split[1];
+
+        if (this.X < outputSpace.X && this.Y < outputSpace.Y) {
+            return;
+        }
+        throw 'Grid is to large to output';
     }
 
     validate() {
