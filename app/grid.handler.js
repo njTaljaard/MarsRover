@@ -21,15 +21,13 @@ class GameHandler {
 
     // init grid to given size & fill with blank spots
     initGrid(g) {
-        // store a reference to grid height
-        gridHeight = g.Y - 1;
+        gridHeight = g.Y;
+        grid = new Array(g.X + 1);
 
-        grid = new Array(g.X);
+        for (let x = 0; x < g.X + 1; x++) {
+            grid[x] = new Array(g.Y + 1);
 
-        for (let x = 0; x < g.X; x++) {
-            grid[x] = new Array(g.Y);
-
-            for (let y = 0; y < g.Y; y++) {
+            for (let y = 0; y < g.Y + 1; y++) {
                 grid[x][y] = 'O';
             }
         }
@@ -47,39 +45,90 @@ class GameHandler {
         for (let r = 0; r < rovers.length; r++) {
             let rover = rovers.shift();
 
-            this.processRover(rover);
-
-            rovers.push(rover);
+            rovers.push(this.processRover(rover));
         }
     }
 
     // process a single rover's moves
     processRover(rover) {
         // TODO check if move is available / valid
+        for (const move of rover.M) {
+            if (move == 'M') {
+                let { x, y } = this.getNewLocation(rover);
+
+                if (this.verifyLocation(x, y)) {
+                    // reset grid old location
+                    grid[rover.X][rover.Y] = 'O';
+
+                    rover.X = x;
+                    rover.Y = y;
+
+                    // assign grid new location
+                    grid[rover.X][rover.Y] = rover.D;
+                } else {
+                    debug(`Not a valid move ${x} ${y} ${rover.D}`)
+                }
+            } else {
+                rover.D = this.getNewOrientation(rover.D, move);
+            }
+        }
+
+        return rover;
+    }
+
+    // translate rover to new location
+    getNewLocation(rover) {
+        switch (rover.D) {
+            case 'N':
+                return { x: rover.X, y: rover.Y + 1 };
+            case 'S':
+                return { x: rover.X, y: rover.Y - 1 };
+            case 'E':
+                return { x: rover.X + 1, y: rover.Y };
+            case 'W':
+                return { x: rover.X - 1, y: rover.Y };
+        }
+    }
+
+    // rotate rover
+    getNewOrientation(pointing, move) {
+        switch (pointing) {
+            case 'N':
+                return move == 'L' ? 'W' : 'E';
+            case 'S':
+                return move == 'L' ? 'E' : 'W';
+            case 'E':
+                return move == 'L' ? 'N' : 'S';
+            case 'W':
+                return move == 'L' ? 'S' : 'N';
+        }
     }
 
     // check if rover's new location is available
-    verifyLocation(location) {
-        // TODO check if location with grid bounds
-        // TODO check if location is unoccupied
-    }
-
-    // get a copy of current rover locations
-    getRover() {
-        return rovers;
+    verifyLocation(x, y) {
+        return (x >= 0 && y >= 0 &&
+            x < grid.length && y < gridHeight &&
+            grid[x][y] == 'O');
     }
 
     // loop array and print each index
     printGrid() {
-        // TODO loop array and print each index
+        let line;
         for (let y = gridHeight; y >= 0; y--) {
-            let line = '';
+            line = '';
             for (let x = 0; x < grid.length; x++) {
                 line += grid[x][y] + '\t';
             }
             console.log(line);
         }
         console.log('');
+    }
+
+    // loop through rovers and print
+    printRovers() {
+        rovers.forEach(el => {
+            console.log(`${el.X} ${el.Y} ${el.D}\n`);
+        });
     }
 }
 

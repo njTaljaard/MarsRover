@@ -36,8 +36,8 @@ class RoverModel {
      */
     assign(location, moves, outputSpace) {
         const loc = location.split(' ');
-        this.X = loc[0];
-        this.Y = loc[1];
+        this.X = parseInt(loc[0]);
+        this.Y = parseInt(loc[1]);
         this.D = loc[2];
 
         if (this.X >= outputSpace.X && this.Y >= outputSpace.Y) {

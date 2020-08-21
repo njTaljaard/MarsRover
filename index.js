@@ -69,6 +69,9 @@ try {
 
     console.log('----END GRID----')
     game.printGrid();
+
+    console.log('----ROVERS----')
+    game.printRovers();
 } catch (e) {
     if (typeof e == 'string') {
         console.log(e);

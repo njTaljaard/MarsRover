@@ -31,8 +31,8 @@ class GridModel {
     assign(input, outputSpace) {
         let split = input.split(' ');
 
-        this.X = split[0];
-        this.Y = split[1];
+        this.X = parseInt(split[0]);
+        this.Y = parseInt(split[1]);
 
         if (this.X < outputSpace.X && this.Y < outputSpace.Y) {
             return;
