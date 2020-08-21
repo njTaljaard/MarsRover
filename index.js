@@ -31,10 +31,10 @@ const readline = require('readline');
             grid = new GridModel(gridInput, { X: mWidth, Y: mHeight });
         } catch (e) {
             if (typeof e == 'string') {
-                debug(e);
+                console.log(e);
                 process.exit();
             }
-            debug('\nInvalid Grid size');
+            console.log('\nInvalid Grid size');
             process.exit();
         }
 
@@ -60,12 +60,11 @@ const readline = require('readline');
                 rovers.push(r);
             }
         } catch (e) {
-            debug(e)
             if (typeof e == 'string') {
-                debug(e);
+                console.log(e);
                 process.exit();
             }
-            debug('\nFailed to create rovers');
+            console.log('\nFailed to create rovers');
             process.exit();
         }
 
@@ -92,7 +91,7 @@ const readline = require('readline');
                 console.log(e);
                 process.exit();
             }
-            debug('\nFailed to execute game');
+            console.log('\nFailed to execute game');
             process.exit();
         }
     } catch (e) {

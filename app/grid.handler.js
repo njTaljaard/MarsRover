@@ -51,7 +51,6 @@ class GameHandler {
 
     // process a single rover's moves
     processRover(rover) {
-        // TODO check if move is available / valid
         for (const move of rover.M) {
             if (move == 'M') {
                 let { x, y } = this.getNewLocation(rover);
@@ -65,8 +64,6 @@ class GameHandler {
 
                     // assign grid new location
                     grid[rover.X][rover.Y] = rover.D;
-                } else {
-                    debug(`Not a valid move ${x} ${y} ${rover.D}`)
                 }
             } else {
                 rover.D = this.getNewOrientation(rover.D, move);
