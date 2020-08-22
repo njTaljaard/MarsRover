@@ -66,7 +66,10 @@ class GameHandler {
                     grid[rover.X][rover.Y] = rover.D;
                 }
             } else {
-                rover.D = this.getNewOrientation(rover.D, move);
+                let tempDirection = this.getNewOrientation(rover.D, move);
+                if (tempDirection !== null) {
+                    rover.D = tempDirection
+                }
             }
         }
 
@@ -84,11 +87,16 @@ class GameHandler {
                 return { x: rover.X + 1, y: rover.Y };
             case 'W':
                 return { x: rover.X - 1, y: rover.Y };
+            default:
+                return { x: null, y: null };
         }
     }
 
     // rotate rover
     getNewOrientation(pointing, move) {
+        if (['L', 'R'].indexOf(move) == -1)
+            return null;
+
         switch (pointing) {
             case 'N':
                 return move == 'L' ? 'W' : 'E';
@@ -98,14 +106,27 @@ class GameHandler {
                 return move == 'L' ? 'N' : 'S';
             case 'W':
                 return move == 'L' ? 'S' : 'N';
+            default:
+                return null;
         }
     }
 
     // check if rover's new location is available
     verifyLocation(x, y) {
-        return (x >= 0 && y >= 0 &&
+        return (x !== null && y !== null &&
+            x >= 0 && y >= 0 &&
             x < grid.length && y < gridHeight &&
             grid[x][y] == 'O');
+    }
+
+    // return current state of grid
+    getGrid() {
+        return grid;
+    }
+
+    // return current state of rovers
+    getRovers() {
+        return rovers;
     }
 
     // loop array and print each index
